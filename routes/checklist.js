@@ -1,4 +1,5 @@
 const {Router} = require("express");
+const Card = require("../models/card");
 
 const router = Router();
 
