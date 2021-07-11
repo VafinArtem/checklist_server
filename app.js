@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const sequelize = require("./utils/database");
 const checkRoutes = require("./routes/checklist");
 
 const app = express();
@@ -13,4 +14,13 @@ app.use((req, res, next) => {
   res.sendFile(`./index.html`);
 });
 
-app.listen(PORT);
+const start = async () => {
+  try {
+    await sequelize.sync();
+    app.listen(PORT);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+start();
