@@ -3,8 +3,13 @@ const Card = require("../models/card");
 
 const router = Router();
 
-router.get(`/`, (req, res) => {
-  res.json({a: 1});
+router.get(`/`, async (req, res) => {
+  try {
+    const cards = await Card.findAll();
+    res.status(200).json(cards);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 router.post(`/`, (req, res) => {});
