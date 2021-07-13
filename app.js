@@ -7,9 +7,14 @@ const checkRoutes = require("./routes/checklist");
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+var corsOptions = {
+  origin: "http://127.0.0.1:3000",
+  optionsSuccessStatus: 200,
+};
+
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/api/cards", cors(), checkRoutes);
+app.use("/api/cards", cors(corsOptions), checkRoutes);
 
 app.use((req, res, next) => {
   res.sendFile(`./index.html`);
