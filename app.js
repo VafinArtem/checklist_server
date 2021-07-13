@@ -12,6 +12,8 @@ app.use("/api/cards", checkRoutes);
 
 app.use((req, res, next) => {
   res.sendFile(`./index.html`);
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "origin, content-type, accept");
 });
 
 const start = async () => {
