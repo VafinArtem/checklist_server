@@ -23,6 +23,17 @@ router.post(`/complite/:id/:status`, async (req, res) => {
   }
 });
 
+router.post(`/edit/:id/`, async (req, res) => {
+  try {
+    const card = await Card.findByPk(+req.params.id);
+    card.text = req.body.text;
+    await card.save();
+    res.status(200).json(card);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 router.put(`/:id`, (req, res) => {});
 
 router.delete(`/:id`, (req, res) => {});
