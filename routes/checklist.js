@@ -12,7 +12,16 @@ router.get(`/`, async (req, res) => {
   }
 });
 
-router.post(`/`, (req, res) => {});
+router.post(`/complite/:id/:status`, async (req, res) => {
+  try {
+    const card = await Card.findByPk(+req.params.id);
+    card.isComplite = req.params.status;
+    await card.save();
+    res.status(200).json(card);
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 router.put(`/:id`, (req, res) => {});
 
