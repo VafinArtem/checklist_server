@@ -1,7 +1,7 @@
 const {Router} = require("express");
 const Card = require("../models/card");
 
-const router = Router();
+const router = new Router();
 
 router.get(`/`, async (req, res) => {
   try {
@@ -34,8 +34,8 @@ router.post(`/edit/:id/`, async (req, res) => {
   }
 });
 
-router.put(`/:id`, (req, res) => {});
+// router.put(`/:id`, (req, res) => {});
 
-router.delete(`/:id`, (req, res) => {});
+// router.delete(`/:id`, (req, res) => {});
 
 module.exports = router;
