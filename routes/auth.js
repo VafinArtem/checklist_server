@@ -22,11 +22,17 @@ router.post(`/login`, async (req, res) => {
         })
       }
     } else {
-      res.status(409).json({answer: `Пользователя не существует`})
+      res.status(200).json({answer: `Пользователя не существует`})
     }
   } catch (error) {
     console.log(error);
   }
+});
+
+router.get(`/logout`, async (req, res) => {
+  req.session.destroy(() => {
+    res.status(200).json({answer: `Выход успешно выполнен`});
+  });
 });
 
 router.post(`/signin`, async (req, res) => {
@@ -34,7 +40,7 @@ router.post(`/signin`, async (req, res) => {
     const {email, password} = req.body;
     const candidate = await User.findOne({where: {email}});
     if (candidate) {
-      res.status(409).json({answer: `Пользователя с таким именем существует`})
+      res.status(200).json({answer: `Пользователя с таким именем существует`})
     } else {
       await User.create({
         email,
