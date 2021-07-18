@@ -41,6 +41,14 @@ router.get(`/logout`, async (req, res) => {
   });
 });
 
+router.get(`/login`, async (req, res) => {
+  if (req.session.isAuth) {
+    res.status(200).json({succes: `Вы авторизованы`, email: req.session.user.email});
+  } else {
+    res.status(401).json({error: `Вы не авторизованы`})
+  }
+});
+
 router.post(`/signin`, async (req, res) => {
   try {
     const {email, password} = req.body;
