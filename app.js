@@ -28,8 +28,9 @@ app.use(express.json());
 app.use("/api/cards", cors(corsOptions), checkRoutes);
 app.use("/api/auth", cors(corsOptions), authRoutes);
 
-app.use((req, res, next) => {
-  res.sendFile(`./index.html`);
+
+app.get('/*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 const start = async () => {
