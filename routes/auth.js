@@ -24,7 +24,6 @@ router.post(`/login`, async (req, res) => {
     } else {
       res.status(409).json({answer: `Пользователя не существует`})
     }
-
   } catch (error) {
     console.log(error);
   }
@@ -35,7 +34,7 @@ router.post(`/signin`, async (req, res) => {
     const {email, password} = req.body;
     const candidate = await User.findOne({where: {email}});
     if (candidate) {
-      res.status(409).json({answer: `Пользователь с таким именем существует`})
+      res.status(409).json({answer: `Пользователя с таким именем существует`})
     } else {
       await User.create({
         email,
