@@ -1,6 +1,11 @@
 const {Router} = require("express");
+const Cryptr = require('cryptr');
 const Card = require("../models/card");
 const User = require("../models/user");
+// eslint-disable-next-line node/no-unpublished-require
+const security = require("../utils/security");
+
+const cryptr = new Cryptr(security.crypt.password);
 
 const router = new Router();
 
@@ -9,6 +14,9 @@ router.get(`/`, async (req, res) => {
     if (req.session.isAuth) {
       const user = await User.findByPk(req.session.user.id);
       const cards = await user.getCards();
+      cards.forEach((card) => {
+        card.text = cryptr.decrypt(card.text);
+      });
       res.status(200).json(cards);
     } else {
       const cards = await Card.findAll({
@@ -16,7 +24,6 @@ router.get(`/`, async (req, res) => {
           userId: null
         }
       });
-      console.log(cards)
       res.status(200).json(cards);
     }
   } catch (error) {
@@ -38,12 +45,13 @@ router.post(`/complite/:id/:status`, async (req, res) => {
 router.post(`/add`, async (req, res) => {
   try {
     const card = await Card.create({
-      text: req.body.text,
+      text: cryptr.encrypt(req.body.text),
       isComplite: false,
       project: "default",
       cathegory: "default",
       userId: req.session.user.id
     });
+    card.text = cryptr.decrypt(card.text)
     res.status(201).json({card});
   } catch (error) {
     console.log(error);
