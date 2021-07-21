@@ -6,6 +6,8 @@ const session = require("express-session");
 const SeqStore = require("connect-session-sequelize")(session.Store);
 const checkRoutes = require("./routes/checklist");
 const authRoutes = require("./routes/auth");
+const User = require("./models/user");
+const Card = require("./models/card");
 
 const corsOptions = {
   origin: "http://127.0.0.1:1337",
@@ -35,6 +37,7 @@ app.get('/*', function (req, res) {
 
 const start = async () => {
   try {
+    User.hasMany(Card)
     await sequelize.sync();
     app.listen(PORT);
   } catch (error) {

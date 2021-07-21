@@ -1,12 +1,24 @@
 const {Router} = require("express");
 const Card = require("../models/card");
+const User = require("../models/user");
 
 const router = new Router();
 
 router.get(`/`, async (req, res) => {
   try {
-    const cards = await Card.findAll();
-    res.status(200).json(cards);
+    if (req.session.isAuth) {
+      const user = await User.findByPk(req.session.user.id);
+      const cards = await user.getCards();
+      res.status(200).json(cards);
+    } else {
+      const cards = await Card.findAll({
+        where: {
+          userId: null
+        }
+      });
+      console.log(cards)
+      res.status(200).json(cards);
+    }
   } catch (error) {
     console.log(error);
   }
@@ -30,6 +42,7 @@ router.post(`/add`, async (req, res) => {
       isComplite: false,
       project: "default",
       cathegory: "default",
+      userId: req.session.user.id
     });
     res.status(201).json({card});
   } catch (error) {

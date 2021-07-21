@@ -4,8 +4,6 @@ const User = require("../models/user");
 
 const router = new Router();
 
-
-
 router.post(`/login`, async (req, res) => {
   try {
     const {email, password} = req.body;
