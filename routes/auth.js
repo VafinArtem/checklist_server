@@ -14,7 +14,6 @@ router.post(`/login`, async (req, res) => {
     if (candidate) {
       const areSame = await bcrypt.compare(password, candidate.password);
 
-      console.log(areSame);
       if (areSame) {
         req.session.user = candidate;
         req.session.isAuth = true;
@@ -25,10 +24,10 @@ router.post(`/login`, async (req, res) => {
           res.status(200).json({succes: `Вход успешно выполнен`})
         })
       } else {
-        res.status(200).json({error: `Введены не верные данные`})
+        res.status(200).json({error: `Введен не верный пароль`})
       }
     } else {
-      res.status(200).json({error: `Пользователя не существует`})
+      res.status(200).json({error: `Такого пользователя не существует`})
     }
   } catch (error) {
     console.log(error);
@@ -55,7 +54,7 @@ router.post(`/signin`, async (req, res) => {
     const candidate = await User.findOne({where: {email}});
 
     if (candidate) {
-      res.status(200).json({error: `Пользователя с таким именем не существует`})
+      res.status(200).json({error: `Пользователь с таким именем уже существует`})
     } else {
       const hashPassword = await bcrypt.hash(password, 10);
       await User.create({
