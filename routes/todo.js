@@ -2,6 +2,7 @@ const {Router} = require("express");
 const Cryptr = require('cryptr');
 const Todo = require("../models/todo");
 const User = require("../models/user");
+// const Project = require("../models/project");
 // eslint-disable-next-line node/no-unpublished-require
 const security = require("../utils/security");
 
@@ -21,7 +22,7 @@ router.get(`/`, async (req, res) => {
     } else {
       const todos = await Todo.findAll({
         where: {
-          userId: null
+          projectId: 3
         }
       });
       res.status(200).json(todos);
@@ -49,7 +50,6 @@ router.post(`/add`, async (req, res) => {
       isComplite: false,
       project: "default",
       cathegory: "default",
-      userId: req.session.user.id
     });
     todo.text = cryptr.decrypt(todo.text)
     res.status(201).json({todo});

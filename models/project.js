@@ -1,26 +1,22 @@
 const Sequelize = require("sequelize");
 
 const sequelize = require("../utils/database");
+const todo = require("./todo");
 
-const todo = sequelize.define(`todo`, {
+const project = sequelize.define(`project`, {
   id: {
     primaryKey: true,
     autoIncrement: true,
     allowNull: false,
     type: Sequelize.INTEGER,
   },
-  text: {
+  name: {
     type: Sequelize.STRING,
-    allowNull: false,
-  },
-  cathegory: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  isComplite: {
-    type: Sequelize.BOOLEAN,
     allowNull: false,
   },
 });
 
-module.exports = todo;
+project.hasMany(todo);
+
+
+module.exports = project;
