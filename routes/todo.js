@@ -1,11 +1,11 @@
 const {Router} = require("express");
 const Cryptr = require('cryptr');
-const Card = require("../models/card");
+const Todo = require("../models/todo");
 const User = require("../models/user");
 // eslint-disable-next-line node/no-unpublished-require
 const security = require("../utils/security");
 
-const cryptr = new Cryptr(security.crypt.password);
+const cryptr = new Cryptr(security.crypt.PASSWORD);
 
 const router = new Router();
 
@@ -13,18 +13,18 @@ router.get(`/`, async (req, res) => {
   try {
     if (req.session.isAuth) {
       const user = await User.findByPk(req.session.user.id);
-      const cards = await user.getCards();
-      cards.forEach((card) => {
-        card.text = cryptr.decrypt(card.text);
+      const todos = await user.getTodos();
+      todos.forEach((todo) => {
+        todo.text = cryptr.decrypt(todo.text);
       });
-      res.status(200).json(cards);
+      res.status(200).json(todos);
     } else {
-      const cards = await Card.findAll({
+      const todos = await Todo.findAll({
         where: {
           userId: null
         }
       });
-      res.status(200).json(cards);
+      res.status(200).json(todos);
     }
   } catch (error) {
     console.log(error);
@@ -33,10 +33,10 @@ router.get(`/`, async (req, res) => {
 
 router.post(`/complite/:id/:status`, async (req, res) => {
   try {
-    const card = await Card.findByPk(+req.params.id);
-    card.isComplite = req.params.status;
-    await card.save();
-    res.status(200).json(card);
+    const todo = await Todo.findByPk(+req.params.id);
+    todo.isComplite = req.params.status;
+    await todo.save();
+    res.status(200).json(todo);
   } catch (error) {
     console.log(error);
   }
@@ -44,15 +44,15 @@ router.post(`/complite/:id/:status`, async (req, res) => {
 
 router.post(`/add`, async (req, res) => {
   try {
-    const card = await Card.create({
+    const todo = await Todo.create({
       text: cryptr.encrypt(req.body.text),
       isComplite: false,
       project: "default",
       cathegory: "default",
       userId: req.session.user.id
     });
-    card.text = cryptr.decrypt(card.text)
-    res.status(201).json({card});
+    todo.text = cryptr.decrypt(todo.text)
+    res.status(201).json({todo});
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -63,10 +63,10 @@ router.post(`/add`, async (req, res) => {
 
 router.post(`/edit/:id/`, async (req, res) => {
   try {
-    const card = await Card.findByPk(+req.params.id);
-    card.text = req.body.text;
-    await card.save();
-    res.status(200).json(card);
+    const todo = await Todo.findByPk(+req.params.id);
+    todo.text = req.body.text;
+    await todo.save();
+    res.status(200).json(todo);
   } catch (error) {
     console.log(error);
   }
@@ -76,13 +76,13 @@ router.post(`/edit/:id/`, async (req, res) => {
 
 router.delete(`/delete/:id`, async (req, res) => {
   try {
-    const cards = await Card.findAll({
+    const todos = await Todo.findAll({
       where: {
         id: req.params.id
       }
     });
-    const card = cards[0];
-    await card.destroy();
+    const todo = todos[0];
+    await todo.destroy();
     res.status(200).json();
   } catch (error) {
     console.log(error);

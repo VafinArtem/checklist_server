@@ -4,10 +4,10 @@ const cors = require("cors");
 const sequelize = require("./utils/database");
 const session = require("express-session");
 const SeqStore = require("connect-session-sequelize")(session.Store);
-const checkRoutes = require("./routes/checklist");
+const todoRoutes = require("./routes/todo");
 const authRoutes = require("./routes/auth");
-const User = require("./models/user");
-const Card = require("./models/card");
+// eslint-disable-next-line node/no-unpublished-require
+const security = require("./utils/security");
 
 const corsOptions = {
   origin: "http://127.0.0.1:1337",
@@ -19,7 +19,7 @@ const app = express();
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(session({
-  secret: `some secret value`,
+  secret: security.express.SECRET,
   store: new SeqStore({
     db: sequelize,
   }),
@@ -27,7 +27,7 @@ app.use(session({
   saveUninitialized: false,
 }))
 app.use(express.json());
-app.use("/api/cards", cors(corsOptions), checkRoutes);
+app.use("/api/todos", cors(corsOptions), todoRoutes);
 app.use("/api/auth", cors(corsOptions), authRoutes);
 
 
@@ -37,7 +37,6 @@ app.get('/*', function (req, res) {
 
 const start = async () => {
   try {
-    User.hasMany(Card)
     await sequelize.sync();
     app.listen(PORT);
   } catch (error) {

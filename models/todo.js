@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 
 const sequelize = require("../utils/database");
 
-const card = sequelize.define(`card`, {
+const todo = sequelize.define(`todo`, {
   id: {
     primaryKey: true,
     autoIncrement: true,
@@ -27,4 +27,4 @@ const card = sequelize.define(`card`, {
   },
 });
 
-module.exports = card;
+module.exports = todo;

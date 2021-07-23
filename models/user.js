@@ -1,6 +1,7 @@
 const Sequelize = require("sequelize");
 
 const sequelize = require("../utils/database");
+const todo = require("./todo");
 
 const user = sequelize.define(`user`, {
   id: {
@@ -18,5 +19,7 @@ const user = sequelize.define(`user`, {
     allowNull: false,
   },
 });
+
+user.hasMany(todo)
 
 module.exports = user;
