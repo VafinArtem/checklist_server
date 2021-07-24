@@ -6,6 +6,7 @@ const session = require("express-session");
 const SeqStore = require("connect-session-sequelize")(session.Store);
 const todoRoutes = require("./routes/todo");
 const authRoutes = require("./routes/auth");
+const projectRoutes = require("./routes/project");
 // eslint-disable-next-line node/no-unpublished-require
 const security = require("./utils/security");
 
@@ -25,10 +26,11 @@ app.use(session({
   }),
   resave: false,
   saveUninitialized: false,
-}))
+}));
 app.use(express.json());
 app.use("/api/todos", cors(corsOptions), todoRoutes);
 app.use("/api/auth", cors(corsOptions), authRoutes);
+app.use("/api/projects", cors(corsOptions), projectRoutes);
 
 
 app.get('/*', function (req, res) {

@@ -51,7 +51,7 @@ router.post(`/add`, async (req, res) => {
       project: "default",
       cathegory: "default",
     });
-    todo.text = cryptr.decrypt(todo.text)
+    todo.text = cryptr.decrypt(todo.text);
     res.status(201).json({todo});
   } catch (error) {
     console.log(error);

@@ -21,13 +21,13 @@ router.post(`/login`, async (req, res) => {
           if (error) {
             throw error;
           }
-          res.status(200).json({succes: `Вход успешно выполнен`})
-        })
+          res.status(200).json({succes: `Вход успешно выполнен`});
+        });
       } else {
-        res.status(200).json({error: `Введен не верный пароль`})
+        res.status(200).json({error: `Введен не верный пароль`});
       }
     } else {
-      res.status(200).json({error: `Такого пользователя не существует`})
+      res.status(200).json({error: `Такого пользователя не существует`});
     }
   } catch (error) {
     console.log(error);
@@ -44,7 +44,7 @@ router.get(`/login`, async (req, res) => {
   if (req.session.isAuth) {
     res.status(200).json({succes: `Вы авторизованы`, email: req.session.user.email});
   } else {
-    res.status(401).json({error: `Вы не авторизованы`})
+    res.status(401).json({error: `Вы не авторизованы`});
   }
 });
 
@@ -61,7 +61,7 @@ const DeafaultTodos = [
     project: "default",
     cathegory: "default",
   }
-]
+];
 
 router.post(`/signin`, async (req, res) => {
   try {
@@ -76,7 +76,7 @@ router.post(`/signin`, async (req, res) => {
     // });
 
     if (candidate) {
-      res.status(200).json({error: `Пользователь с таким именем уже существует`})
+      res.status(200).json({error: `Пользователь с таким именем уже существует`});
     } else {
       let userId;
       let projectId;
@@ -86,14 +86,14 @@ router.post(`/signin`, async (req, res) => {
         password: hashPassword,
       })
         .then((res) => {
-          userId = res.dataValues.id
-      })
+          userId = res.dataValues.id;
+      });
       await Project.create({
         name: `По умолчанию`,
         userId
       }).then((res) => {
-        projectId = res.dataValues.id
-    })
+        projectId = res.dataValues.id;
+    });
       DeafaultTodos.forEach(async (todo) => {
         await Todo.create({
           text: todo.text,
@@ -101,13 +101,13 @@ router.post(`/signin`, async (req, res) => {
           cathegory: todo.cathegory,
           project: todo.project,
           projectId
-        })
-      })
+        });
+      });
       // await Project.create({
       //   name: "По умолчанию",
       //   userId: req.session.user.id
       // })
-      res.status(200).json({succes: `Пользователь создан`})
+      res.status(200).json({succes: `Пользователь создан`});
     }
   } catch (error) {
     console.log(error);
