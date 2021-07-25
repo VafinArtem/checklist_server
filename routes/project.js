@@ -8,14 +8,14 @@ router.get(`/`, async (req, res) => {
     if (req.session.isAuth) {
       const user = await User.findByPk(req.session.user.id);
       const projects = await user.getProjects();
-      res.status(200).json(projects);
+      res.status(200).json({projects, projectId: req.session.projectId});
     } else {
       const projects = await Project.findAll({
         where: {
           name: `UnregisteredProject`
         }
       });
-      res.status(200).json(projects);
+      res.status(200).json({projects});
     }
   } catch (error) {
     console.log(error);

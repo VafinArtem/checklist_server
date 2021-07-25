@@ -1,8 +1,7 @@
 const {Router} = require("express");
 const Cryptr = require('cryptr');
 const Todo = require("../models/todo");
-const User = require("../models/user");
-// const Project = require("../models/project");
+const Project = require("../models/project");
 // eslint-disable-next-line node/no-unpublished-require
 const security = require("../utils/security");
 
@@ -10,19 +9,25 @@ const cryptr = new Cryptr(security.crypt.PASSWORD);
 
 const router = new Router();
 
-router.get(`/`, async (req, res) => {
+router.get(`/:projectId`, async (req, res) => {
   try {
     if (req.session.isAuth) {
-      const user = await User.findByPk(req.session.user.id);
-      const todos = await user.getTodos();
-      todos.forEach((todo) => {
-        todo.text = cryptr.decrypt(todo.text);
+      req.session.projectId = req.params.projectId;
+      req.session.save(async (error) => {
+        if (error) {
+          throw error;
+        }
+        const project = await Project.findByPk(req.params.projectId);
+        const todos = await project.getTodos();
+        todos.forEach((todo) => {
+          todo.text = project.dataValues.name === `По умолчанию` ? todo.text : cryptr.decrypt(todo.text);
+        });
+        res.status(200).json(todos);
       });
-      res.status(200).json(todos);
     } else {
       const todos = await Todo.findAll({
         where: {
-          projectId: 3
+          projectId: req.params.projectId
         }
       });
       res.status(200).json(todos);
