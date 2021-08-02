@@ -12,12 +12,12 @@ const router = new Router();
 router.get(`/:projectId`, async (req, res) => {
   try {
     if (req.session.isAuth) {
-      req.session.projectId = req.params.projectId;
+      req.session.projectId = parseInt(req.params.projectId, 10);
       req.session.save(async (error) => {
         if (error) {
           throw error;
         }
-        const project = await Project.findByPk(req.params.projectId);
+        const project = await Project.findByPk(req.session.projectId);
         const todos = await project.getTodos();
         todos.forEach((todo) => {
           todo.text = project.dataValues.name === `По умолчанию` ? todo.text : cryptr.decrypt(todo.text);
@@ -53,8 +53,8 @@ router.post(`/add`, async (req, res) => {
     const todo = await Todo.create({
       text: cryptr.encrypt(req.body.text),
       isComplite: false,
-      project: "default",
       cathegory: "default",
+      projectId: req.session.projectId
     });
     todo.text = cryptr.decrypt(todo.text);
     res.status(201).json({todo});
