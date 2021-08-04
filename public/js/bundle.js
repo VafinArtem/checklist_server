@@ -40954,9 +40954,8 @@ const CardControls = ({
 CardControls.propTypes = {
   id: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.number.isRequired,
   text: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string.isRequired,
-  isComplite: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.bool.isRequired,
   editCard: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.bool.isRequired,
-  updatedText: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.bool.isRequired,
+  updatedText: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string.isRequired,
   setEditCard: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.func.isRequired
 };
 /* harmony default export */ __webpack_exports__["default"] = (CardControls);
@@ -41141,7 +41140,8 @@ const CheckList = () => {
     className: "checklist__title visually-hidden"
   }, "\u041F\u0440\u043E\u0435\u043A\u0442: maffin.pw"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_list_list__WEBPACK_IMPORTED_MODULE_6__["default"], {
     title: _consts__WEBPACK_IMPORTED_MODULE_2__["ListTypes"].IN_PROCESS,
-    cards: notComplitedCards
+    cards: notComplitedCards,
+    type: _consts__WEBPACK_IMPORTED_MODULE_2__["ListTypes"].IN_PROCESS
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_list_list__WEBPACK_IMPORTED_MODULE_6__["default"], {
     title: _consts__WEBPACK_IMPORTED_MODULE_2__["ListTypes"].IS_READY,
     cards: compliteCards
@@ -41177,12 +41177,11 @@ const Filters = () => {
   const projects = Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["useSelector"])(state => state[_store_main_reducer__WEBPACK_IMPORTED_MODULE_3__["NameSpace"].PROJECTS].projects);
   const projectId = Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["useSelector"])(state => state[_store_main_reducer__WEBPACK_IMPORTED_MODULE_3__["NameSpace"].PROJECTS].currenProjectId);
   const projectName = Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["useSelector"])(state => state[_store_main_reducer__WEBPACK_IMPORTED_MODULE_3__["NameSpace"].PROJECTS].currenProjectName);
-  const projectRef = Object(react__WEBPACK_IMPORTED_MODULE_0__["useRef"])();
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("section", {
     className: "top__filters filters"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", {
     className: "visually-hidden"
-  }, "\u0424\u0438\u043B\u044C\u0442\u0440\u044B"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+  }, "\u0424\u0438\u043B\u044C\u0442\u0440\u044B"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "filters__form"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_select_select__WEBPACK_IMPORTED_MODULE_4__["default"], {
     title: `Выберите проект:`,
@@ -41332,12 +41331,18 @@ const List = ({
   title,
   cards
 }) => {
-  const isAddCard = Object(react_redux__WEBPACK_IMPORTED_MODULE_2__["useSelector"])(state => state[_store_main_reducer__WEBPACK_IMPORTED_MODULE_6__["NameSpace"].CARDS].isAddCard);
+  const memoCards = Object(react__WEBPACK_IMPORTED_MODULE_0__["useMemo"])(() => cards, [cards]);
+  let isAddCard = false;
+
+  if (title === _consts__WEBPACK_IMPORTED_MODULE_7__["ListTypes"].IN_PROCESS) {
+    isAddCard = Object(react_redux__WEBPACK_IMPORTED_MODULE_2__["useSelector"])(state => state[_store_main_reducer__WEBPACK_IMPORTED_MODULE_6__["NameSpace"].CARDS].isAddCard);
+  }
+
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", {
-    className: "checklist__subtitle"
+    className: "visually-hidden"
   }, title), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
     className: "checklist__list"
-  }, isAddCard && title === _consts__WEBPACK_IMPORTED_MODULE_7__["ListTypes"].IN_PROCESS ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_new_card_new_card__WEBPACK_IMPORTED_MODULE_4__["default"], null) : ``, cards.map(({
+  }, isAddCard && title === _consts__WEBPACK_IMPORTED_MODULE_7__["ListTypes"].IN_PROCESS ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_new_card_new_card__WEBPACK_IMPORTED_MODULE_4__["default"], null) : ``, memoCards.map(({
     id,
     text,
     isComplite
@@ -41655,30 +41660,6 @@ const NewElements = () => {
   }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "add-items__item"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    className: "add-items__button button"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("svg", {
-    className: "button__icon",
-    width: 15,
-    height: 12
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("use", {
-    xlinkHref: "img/sprite.svg#icon-project"
-  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-    className: "button__text"
-  }, "\u041A\u0430\u0442\u0435\u0433\u043E\u0440\u0438\u044F")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
-    action: "/",
-    className: "add-items__input-box"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    type: "text",
-    className: "add-items__input",
-    name: "new_cathegory",
-    placeholder: "\u041D\u043E\u0432\u0430\u044F \u043A\u0430\u0442\u0435\u0433\u043E\u0440\u0438\u044F"
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    type: "submit",
-    className: "add-items__confirm",
-    "aria-label": "\u041F\u043E\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u044C"
-  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "add-items__item"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     className: "add-items__button button",
     onClick: () => {
       if (authorizationStatus === _consts__WEBPACK_IMPORTED_MODULE_2__["AuthorizationStatus"].AUTH) {
@@ -41815,6 +41796,7 @@ const Select = ({
   setValue
 }) => {
   const dispatch = Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["useDispatch"])();
+  const selectRef = Object(react__WEBPACK_IMPORTED_MODULE_0__["useRef"])();
   const [showList, setShowList] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
   const [currentItem, setCurrentItem] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(currentName);
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(() => {
@@ -41823,8 +41805,19 @@ const Select = ({
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(() => {
     dispatch(changeLoadCardsStatus());
   }, [currentItem]);
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(() => {
+    const onClick = evt => {
+      if (selectRef.current && !selectRef.current.contains(evt.target)) {
+        setShowList(false);
+      }
+    };
+
+    document.addEventListener(`click`, onClick);
+    return () => document.removeEventListener(`click`, onClick);
+  }, []);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "item__select select"
+    className: "item__select select",
+    ref: selectRef
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", {
     className: "select__title"
   }, title), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -41854,7 +41847,7 @@ const Select = ({
 
 Select.propTypes = {
   items: prop_types__WEBPACK_IMPORTED_MODULE_3___default.a.array.isRequired,
-  currentValue: prop_types__WEBPACK_IMPORTED_MODULE_3___default.a.number.isRequired,
+  currentValue: prop_types__WEBPACK_IMPORTED_MODULE_3___default.a.number,
   currentName: prop_types__WEBPACK_IMPORTED_MODULE_3___default.a.string.isRequired,
   title: prop_types__WEBPACK_IMPORTED_MODULE_3___default.a.string.isRequired,
   changeLoadCardsStatus: prop_types__WEBPACK_IMPORTED_MODULE_3___default.a.func.isRequired,
@@ -42433,9 +42426,7 @@ const fetchNewCard = text => (dispatch, _getState, api) => api.post(`${ApiRoute.
   text
 }).then(({
   data
-}) => {
-  dispatch(Object(_actions__WEBPACK_IMPORTED_MODULE_2__["addCard"])(data));
-}).catch(() => {});
+}) => dispatch(Object(_actions__WEBPACK_IMPORTED_MODULE_2__["addCard"])(data.todo))).catch(() => {});
 const fetchNewProject = name => (dispatch, _getState, api) => api.post(`${ApiRoute.ADD_PROJECT}`, name).then(({
   data
 }) => {
@@ -42573,7 +42564,7 @@ const cards = Object(_reduxjs_toolkit__WEBPACK_IMPORTED_MODULE_0__["createReduce
     state.isAddCard = action.payload;
   });
   builder.addCase(_actions__WEBPACK_IMPORTED_MODULE_1__["ActionType"].ADD_CARD, (state, action) => {
-    state.cards.push(action.payload.card);
+    state.cards.push(action.payload);
     state.isAddCard = false;
   });
   builder.addCase(_actions__WEBPACK_IMPORTED_MODULE_1__["ActionType"].DELETE_CARD, (state, action) => {

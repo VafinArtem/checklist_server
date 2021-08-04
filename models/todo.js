@@ -10,7 +10,7 @@ const todo = sequelize.define(`todo`, {
     type: Sequelize.INTEGER,
   },
   text: {
-    type: Sequelize.STRING,
+    type: Sequelize.STRING(1234),
     allowNull: false,
   },
   cathegory: {
