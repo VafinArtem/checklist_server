@@ -39,10 +39,14 @@ router.get(`/:projectId`, async (req, res) => {
 
 router.post(`/complite/:id/:status`, async (req, res) => {
   try {
-    const todo = await Todo.findByPk(+req.params.id);
-    todo.isComplite = req.params.status;
-    await todo.save();
-    res.status(200).json(todo);
+    if (req.session.isAuth) {
+      const todo = await Todo.findByPk(+req.params.id);
+      todo.isComplite = req.params.status;
+      await todo.save();
+      res.status(200).json(todo);
+    } else {
+      res.status(401).json({error: `Вы не авторизованы`});
+    }
   } catch (error) {
     console.log(error);
   }
