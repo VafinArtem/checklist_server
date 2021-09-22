@@ -1,10 +1,21 @@
 const {Router} = require("express");
 const bcrypt = require("bcryptjs");
+const nodemailer = require("nodemailer");
+const sendgrid = require("nodemailer-sendgrid-transport");
 const User = require("../models/user");
 const Project = require("../models/project");
 const Todo = require("../models/todo");
+const regEmail = require("../emails/registration");
+// eslint-disable-next-line node/no-unpublished-require
+const security = require("../utils/security");
 
 const router = new Router();
+
+const transporter = nodemailer.createTransport(sendgrid({
+  auth: {
+    api_key: security.sendgrid.KEY,
+  }
+}));
 
 router.post(`/login`, async (req, res) => {
   try {
@@ -84,16 +95,15 @@ router.post(`/signin`, async (req, res) => {
       await User.create({
         email,
         password: hashPassword,
-      })
-        .then((res) => {
-          userId = res.dataValues.id;
+      }).then((res) => {
+        userId = res.dataValues.id;
       });
       await Project.create({
         name: `По умолчанию`,
         userId
       }).then((res) => {
         projectId = res.dataValues.id;
-    });
+      });
       DeafaultTodos.forEach(async (todo) => {
         await Todo.create({
           text: todo.text,
@@ -108,6 +118,7 @@ router.post(`/signin`, async (req, res) => {
       //   userId: req.session.user.id
       // })
       res.status(200).json({succes: `Пользователь создан`});
+      await transporter.sendMail(regEmail(email));
     }
   } catch (error) {
     console.log(error);
