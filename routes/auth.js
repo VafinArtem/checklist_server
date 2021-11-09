@@ -1,5 +1,6 @@
 const {Router} = require("express");
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const sendgrid = require("nodemailer-sendgrid-transport");
 const User = require("../models/user");
@@ -8,6 +9,8 @@ const Todo = require("../models/todo");
 const regEmail = require("../emails/registration");
 // eslint-disable-next-line node/no-unpublished-require
 const security = require("../utils/security");
+const restore = require("../emails/restore");
+const newPassword = require("../emails/new-password");
 
 const router = new Router();
 
@@ -119,6 +122,51 @@ router.post(`/signin`, async (req, res) => {
       // })
       res.status(200).json({succes: `Пользователь создан`});
       await transporter.sendMail(regEmail(email));
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+router.post('/restore', (req, res) => {
+  try {
+    crypto.randomBytes(32, async (err, buffer) => {
+      if (err) {
+        res.status(200).json({error: `Произошла ошибка. Повторите позже.`});
+        return;
+      }
+      const token = buffer.toString('hex');
+      const candidate = await User.findOne({where: {email: req.body.email}});
+
+      if (candidate) {
+        candidate.restoreToken = token;
+        candidate.restoreTokenExp = Date.now() + 60 * 60 * 1000;
+        await candidate.save();
+        await transporter.sendMail(restore(candidate.email, token));
+        res.status(200).json({succes: `Ссылка для востановления пароля отправлена вам на email`});
+      } else {
+        res.status(200).json({error: `Такого email не существует`});
+      }
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+router.post('/new-password', async (req, res) => {
+  try {
+    const {token, password} = req.body;
+
+    const hashPassword = await bcrypt.hash(password, 10);
+    const candidate = await User.findOne({where: {token}});
+
+    if (candidate) {
+      candidate.password = hashPassword;
+      await candidate.save();
+      await transporter.sendMail(newPassword(candidate.email, token));
+      res.status(200).json({succes: `Вы успешно изменили пароль`});
+    } else {
+      res.status(200).json({error: `Такого токена не существует, или он уже истек`});
     }
   } catch (error) {
     console.log(error);

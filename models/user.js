@@ -18,6 +18,14 @@ const user = sequelize.define(`user`, {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  restoreToken: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  restoreTokenExp: {
+    type: Sequelize.DATE,
+    allowNull: false,
+  },
 });
 
 user.hasMany(project);
