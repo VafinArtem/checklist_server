@@ -20,11 +20,9 @@ const user = sequelize.define(`user`, {
   },
   restoreToken: {
     type: Sequelize.STRING,
-    allowNull: false,
   },
   restoreTokenExp: {
     type: Sequelize.DATE,
-    allowNull: false,
   },
 });
 

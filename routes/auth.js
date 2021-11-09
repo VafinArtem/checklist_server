@@ -1,4 +1,5 @@
 const {Router} = require("express");
+const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
@@ -158,12 +159,14 @@ router.post('/new-password', async (req, res) => {
     const {token, password} = req.body;
 
     const hashPassword = await bcrypt.hash(password, 10);
-    const candidate = await User.findOne({where: {token}});
+    const candidate = await User.findOne({where: {restoreToken: token, restoreTokenExp: {[Op.gt]: Date.now()}}});
 
     if (candidate) {
       candidate.password = hashPassword;
+      candidate.restoreToken = ``;
+      candidate.restoreTokenExp = Date.now();
       await candidate.save();
-      await transporter.sendMail(newPassword(candidate.email, token));
+      await transporter.sendMail(newPassword(candidate.email));
       res.status(200).json({succes: `Вы успешно изменили пароль`});
     } else {
       res.status(200).json({error: `Такого токена не существует, или он уже истек`});
